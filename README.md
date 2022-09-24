@@ -9,7 +9,7 @@ Download the latest release, and launch the executable.
 
 Once you open the application, you'll see a view like below
 
-![image](https://user-images.githubusercontent.com/45884377/192080209-bdd52179-4a30-407e-b890-28a51724b93a.png)
+![image](https://user-images.githubusercontent.com/45884377/192105715-bba6f57d-a20e-4962-9554-44a3e7916f32.png)
 
 Here's an explanation of each category in the program,
 
@@ -27,6 +27,10 @@ All of the applications to listen for repeating. Clicking a button will open an 
   + The Port to where the messages will be forwarded to
 + **SendHost**
   + Where to listen for incoming messages from the application
++ **SAVE**
+  + Saves the current data to config
++ **DELETE**
+  + Deletes the application from config
 
 ___
 
