@@ -14,6 +14,52 @@ var (
 	updateLabel *widget.Label
 )
 
+func serverSettingsWindow(mainWindow fyne.Window) {
+	window := a.NewWindow("Server Settings")
+	clientHost := widget.NewEntry()
+	clientHost.SetText(oscConfig.ClientHost)
+	clientHost.SetPlaceHolder(oscConfig.ClientHost)
+	clientListenToPort := widget.NewEntry()
+	clientListenToPort.SetText(strconv.Itoa(oscConfig.ClientListenToPort))
+	clientListenToPort.SetPlaceHolder(strconv.Itoa(oscConfig.ClientListenToPort))
+	clientSendToPort := widget.NewEntry()
+	clientSendToPort.SetText(strconv.Itoa(oscConfig.ClientSendToPort))
+	clientSendToPort.SetPlaceHolder(strconv.Itoa(oscConfig.ClientSendToPort))
+	window.SetContent(container.NewVBox(
+		widget.NewLabel("ClientHost"),
+		widget.NewLabel("Defines the host to repeat all OSC messages to (127.0.0.1)"),
+		clientHost,
+		widget.NewLabel("ClientListenToPort"),
+		widget.NewLabel("Defines the port to listen for OSC messages coming from the server endpoint (9001)"),
+		clientListenToPort,
+		widget.NewLabel("ClientSendToPort"),
+		widget.NewLabel("Defines the port to send repeated OSC messages to (9000)"),
+		clientSendToPort,
+		widget.NewButton("APPLY", func() {
+			didChangeOne := false
+			if len(clientHost.Text) > 0 {
+				oscConfig.ClientHost = clientHost.Text
+				didChangeOne = true
+			}
+			if len(clientListenToPort.Text) > 0 {
+				oscConfig.ClientListenToPort, _ = strconv.Atoi(clientListenToPort.Text)
+				didChangeOne = true
+			}
+			if len(clientSendToPort.Text) > 0 {
+				oscConfig.ClientSendToPort, _ = strconv.Atoi(clientSendToPort.Text)
+				didChangeOne = true
+			}
+			if didChangeOne {
+				SaveConfig(oscConfig)
+				reloadConfigFromWindow(mainWindow)
+				window.Close()
+			}
+		}),
+	))
+	window.Resize(fyne.NewSize(400, 0))
+	window.Show()
+}
+
 func getButtonWidgets(mainWindow fyne.Window) []*widget.Button {
 	buttons := make([]*widget.Button, len(oscConfig.Routes))
 	for i := 0; i < len(oscConfig.Routes); i++ {
@@ -86,9 +132,13 @@ func clearAndRegenContainer(w fyne.Window) {
 	}
 	c = container.NewVBox(
 		widget.NewLabel("OSCRouter - "+version),
-		widget.NewLabel("Applications"),
+		widget.NewSeparator(),
 	)
+	c.Add(widget.NewButton("Server Settings", func() {
+		serverSettingsWindow(w)
+	}))
 	c.Add(widget.NewSeparator())
+	c.Add(widget.NewLabel("Applications"))
 	appButtons := getButtonWidgets(w)
 	if len(appButtons) <= 0 {
 		c.Add(widget.NewLabel("I looked far and wide, alas, no Applications :("))
