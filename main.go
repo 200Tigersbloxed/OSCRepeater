@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/gonutz/w32/v2"
 	"github.com/hypebeast/go-osc/osc"
 )
 
@@ -17,13 +18,20 @@ var (
 	oscRoutes []Router
 	oscConfig = Config{}.Default()
 	didStart  bool
+	console   w32.HWND
 )
 
 const (
 	version = "pre0.1"
 )
 
+func hideConsoleWindow() {
+	console = w32.GetConsoleWindow()
+	w32.ShowWindowAsync(console, w32.SW_HIDE)
+}
+
 func main() {
+	hideConsoleWindow()
 	oscConfig = LoadConfig()
 	//StartOSCClient()
 	//StartOSCRoutes(oscConfig.Routes)
